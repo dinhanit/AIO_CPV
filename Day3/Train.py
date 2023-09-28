@@ -4,7 +4,7 @@ from arg import *
 import json
         
 def Saved_Model(model,loss=[[],[],[],[]]):
-    name_model = 'best'#input('Enter Name Model: ')
+    name_model = 'best2'#input('Enter Name Model: ')
     if name_model != "":
         path_model ="Model/"
         torch.save(model,path_model+name_model+'.pth')
@@ -25,7 +25,7 @@ loss_test = []
 f1_train = []
 f1_test = []
 worse=0
-stop = 100
+stop = 5
 min_loss = 10
 for epoch in range(EPOCHS):
     model.train()  # Set the model to training mode
@@ -77,9 +77,12 @@ for epoch in range(EPOCHS):
 
     if test_loss_val > min_loss:
         worse +=1
-        print(worse)
+        print('Stop',worse,'/',stop)
         if worse >= stop:
-            Saved_Model(best_model,loss_test[:best_loss_epoch])
+            Saved_Model(best_model,[loss_train[:best_loss_epoch],
+                                    loss_test[:best_loss_epoch],
+                                    f1_train[:best_loss_epoch],
+                                    f1_test [:best_loss_epoch],])
             loss_test.append(test_loss_val)
             f1_test.append(test_f1_val)
             print(f'Epoch [{epoch + 1}/{EPOCHS}]  - Train Loss: {train_loss:.4f} - Train F1: {train_f1:.4f} - Test Loss: {test_loss_val:.4f} - Test F1: {test_f1_val:.4f}')
@@ -94,4 +97,7 @@ for epoch in range(EPOCHS):
     f1_test.append(test_f1_val)
     print(f'Epoch [{epoch + 1}/{EPOCHS}]  - Train Loss: {train_loss:.4f} - Train F1: {train_f1:.4f} - Test Loss: {test_loss_val:.4f} - Test F1: {test_f1_val:.4f}')
 
-Saved_Model(best_model,loss_test[:best_loss_epoch])
+Saved_Model(best_model,[loss_train[:best_loss_epoch],
+                        loss_test[:best_loss_epoch],
+                        f1_train[:best_loss_epoch],
+                        f1_test [:best_loss_epoch],])
