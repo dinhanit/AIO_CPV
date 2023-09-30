@@ -333,7 +333,6 @@ class MobileNetV2(nn.Module):
                 [6, 320, 1, 1],
             ]
 
-        # Building first layer
         input_channel = int(input_channel * width_mult)
         self.last_channel = int(last_channel * width_mult)
         self.features = [nn.Sequential(
@@ -341,7 +340,6 @@ class MobileNetV2(nn.Module):
             nn.BatchNorm2d(input_channel),
             nn.ReLU6(inplace=True)
         )]
-        # Building inverted residual blocks
         for t, c, n, s in inverted_residual_setting:
             output_channel = int(c * width_mult)
             for i in range(n):
@@ -350,16 +348,13 @@ class MobileNetV2(nn.Module):
                 else:
                     self.features.append(InvertedResidual(input_channel, output_channel, 1, t))
                 input_channel = output_channel
-        # Building last several layers
         self.features.append(nn.Sequential(
             nn.Conv2d(input_channel, self.last_channel, kernel_size=1, bias=False),
             nn.BatchNorm2d(self.last_channel),
             nn.ReLU6(inplace=True)
         ))
-        # Make it a nn.Module
         self.features = nn.Sequential(*self.features)
 
-        # Classifier
         self.classifier = nn.Sequential(
             nn.Dropout(0.2),
             nn.Linear(self.last_channel, num_classes)
@@ -375,13 +370,11 @@ class InceptionModule(nn.Module):
     def __init__(self, in_channels, out1x1, reduce3x3, out3x3, reduce5x5, out5x5, out1x1pool):
         super(InceptionModule, self).__init__()
 
-        # 1x1 convolution branch
         self.branch1x1 = nn.Sequential(
             nn.Conv2d(in_channels, out1x1, kernel_size=1),
             nn.ReLU(inplace=True)
         )
 
-        # 1x1 convolution followed by 3x3 convolution branch
         self.branch3x3 = nn.Sequential(
             nn.Conv2d(in_channels, reduce3x3, kernel_size=1),
             nn.ReLU(inplace=True),
@@ -389,7 +382,6 @@ class InceptionModule(nn.Module):
             nn.ReLU(inplace=True)
         )
 
-        # 1x1 convolution followed by 5x5 convolution branch
         self.branch5x5 = nn.Sequential(
             nn.Conv2d(in_channels, reduce5x5, kernel_size=1),
             nn.ReLU(inplace=True),
@@ -397,7 +389,6 @@ class InceptionModule(nn.Module):
             nn.ReLU(inplace=True)
         )
 
-        # 3x3 max pooling followed by 1x1 convolution branch
         self.branch1x1pool = nn.Sequential(
             nn.MaxPool2d(kernel_size=3, stride=1, padding=1),
             nn.Conv2d(in_channels, out1x1pool, kernel_size=1),
