@@ -8,7 +8,7 @@ train_transforms = transforms.Compose([
     # transforms.RandomHorizontalFlip(p=0.1),
     # transforms.RandomVerticalFlip(p=0.1),
     # transforms.RandomRotation(degrees=15),
-    # transforms.GaussianBlur(kernel_size = 3),
+    transforms.GaussianBlur(kernel_size = 3),
     # transforms.ColorJitter(
     #     brightness = 0.2, 
     #     contrast = 0.2,

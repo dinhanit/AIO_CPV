@@ -4,7 +4,7 @@ from arg import *
 import json
         
 def Saved_Model(model,loss=[[],[],[],[]]):
-    name_model = 'best2'#input('Enter Name Model: ')
+    name_model = 'GGNet'#input('Enter Name Model: ')
     if name_model != "":
         path_model ="Model/"
         torch.save(model,path_model+name_model+'.pth')
