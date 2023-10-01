@@ -1,3 +1,3 @@
-EPOCHS = 15
+EPOCHS = 5
 Lr = 1e-3
 BATCH_SIZE = 64

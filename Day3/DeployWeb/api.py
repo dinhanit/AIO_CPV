@@ -4,23 +4,17 @@ from fastapi import FastAPI, UploadFile
 from PIL import Image
 from torchvision import models, transforms
 from utils import *
+import os
 
 api = FastAPI()
 
-# Load the pre-trained MobileNetV2 and GoogLeNet models
 device = 'cuda'
-MobileNetv2 = load_models(
-        path = 'Weight/MobileNetV2.pth',
-        device = device
-    )
-GGNet = load_models(
-        path = 'Weight/GGNet.pth',
-        device = device
-    )
-Models =[MobileNetv2,GGNet]
+name_model = os.listdir('D:\AIO_CPV\Day3\DeployWeb\Weight')
+
+Models =[load_models('Weight/'+name,device = device) for name in name_model]
 
 @api.post("/classify/")
-async def classify_image(file: UploadFile, model_type: str = "0"):
+async def classify_image(file: UploadFile, model_type: str):
     model = Models[int(model_type)]
 
     image_bytes = await file.read()

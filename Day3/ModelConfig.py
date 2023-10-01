@@ -18,7 +18,7 @@ TESTLOADER = DataLoader(test_data, batch_size=BATCH_SIZE, shuffle=False)
 
 
 # Init Model
-model = ResNet50(num_classes=num_classes)
+model = GoogleNet(num_classes=num_classes)
 model.to(DEVICE)
 
 # Loss
