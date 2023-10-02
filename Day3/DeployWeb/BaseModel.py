@@ -45,6 +45,7 @@ class MobileNetV2(nn.Module):
                 [6, 320, 1, 1],
             ]
 
+        # Building first layer
         input_channel = int(input_channel * width_mult)
         self.last_channel = int(last_channel * width_mult)
         self.features = [nn.Sequential(
@@ -52,7 +53,7 @@ class MobileNetV2(nn.Module):
             nn.BatchNorm2d(input_channel),
             nn.ReLU6(inplace=True)
         )]
-
+        # Building inverted residual blocks
         for t, c, n, s in inverted_residual_setting:
             output_channel = int(c * width_mult)
             for i in range(n):
@@ -61,14 +62,16 @@ class MobileNetV2(nn.Module):
                 else:
                     self.features.append(InvertedResidual(input_channel, output_channel, 1, t))
                 input_channel = output_channel
-        
+        # Building last several layers
         self.features.append(nn.Sequential(
             nn.Conv2d(input_channel, self.last_channel, kernel_size=1, bias=False),
             nn.BatchNorm2d(self.last_channel),
             nn.ReLU6(inplace=True)
         ))
+        # Make it a nn.Module
         self.features = nn.Sequential(*self.features)
 
+        # Classifier
         self.classifier = nn.Sequential(
             nn.Dropout(0.2),
             nn.Linear(self.last_channel, num_classes)
@@ -80,6 +83,102 @@ class MobileNetV2(nn.Module):
         x = self.classifier(x)
         return x
 
+
+
+
+# class InceptionModule(nn.Module):
+#     def __init__(self, in_channels, out1x1, reduce3x3, out3x3, reduce5x5, out5x5, out1x1pool):
+#         super(InceptionModule, self).__init__()
+
+#         # 1x1 convolution branch
+#         self.branch1x1 = nn.Sequential(
+#             nn.Conv2d(in_channels, out1x1, kernel_size=1),
+#             nn.ReLU(inplace=True)
+#         )
+
+#         # 1x1 convolution followed by 3x3 convolution branch
+#         self.branch3x3 = nn.Sequential(
+#             nn.Conv2d(in_channels, reduce3x3, kernel_size=1),
+#             nn.ReLU(inplace=True),
+#             nn.Conv2d(reduce3x3, out3x3, kernel_size=3, padding=1),
+#             nn.ReLU(inplace=True)
+#         )
+
+#         # 1x1 convolution followed by 5x5 convolution branch
+#         self.branch5x5 = nn.Sequential(
+#             nn.Conv2d(in_channels, reduce5x5, kernel_size=1),
+#             nn.ReLU(inplace=True),
+#             nn.Conv2d(reduce5x5, out5x5, kernel_size=5, padding=2),
+#             nn.ReLU(inplace=True)
+#         )
+
+#         # 3x3 max pooling followed by 1x1 convolution branch
+#         self.branch1x1pool = nn.Sequential(
+#             nn.MaxPool2d(kernel_size=3, stride=1, padding=1),
+#             nn.Conv2d(in_channels, out1x1pool, kernel_size=1),
+#             nn.ReLU(inplace=True)
+#         )
+
+#     def forward(self, x):
+#         branch1x1 = self.branch1x1(x)
+#         branch3x3 = self.branch3x3(x)
+#         branch5x5 = self.branch5x5(x)
+#         branch1x1pool = self.branch1x1pool(x)
+
+#         outputs = [branch1x1, branch3x3, branch5x5, branch1x1pool]
+#         return torch.cat(outputs, 1)
+
+# class GoogleNet(nn.Module):
+#     def __init__(self, num_classes=1000):
+#         super(GoogleNet, self).__init__()
+#         self.conv1 = nn.Conv2d(3, 64, kernel_size=7, stride=2, padding=3)
+#         self.maxpool1 = nn.MaxPool2d(kernel_size=3, stride=2, padding=1)
+#         self.conv2 = nn.Conv2d(64, 64, kernel_size=1)
+#         self.conv3 = nn.Conv2d(64, 192, kernel_size=3, padding=1)
+#         self.maxpool2 = nn.MaxPool2d(kernel_size=3, stride=2, padding=1)
+
+#         self.inception3a = InceptionModule(192, 64, 96, 128, 16, 32, 32)
+#         self.inception3b = InceptionModule(256, 128, 128, 192, 32, 96, 64)
+
+#         self.maxpool3 = nn.MaxPool2d(kernel_size=3, stride=2, padding=1)
+
+#         self.inception4a = InceptionModule(480, 192, 96, 208, 16, 48, 64)
+#         self.inception4b = InceptionModule(512, 160, 112, 224, 24, 64, 64)
+#         self.inception4c = InceptionModule(512, 128, 128, 256, 24, 64, 64)
+#         self.inception4d = InceptionModule(512, 112, 144, 288, 32, 64, 64)
+#         self.inception4e = InceptionModule(528, 256, 160, 320, 32, 128, 128)
+
+#         self.maxpool4 = nn.MaxPool2d(kernel_size=3, stride=2, padding=1)
+
+#         self.inception5a = InceptionModule(832, 256, 160, 320, 32, 128, 128)
+#         self.inception5b = InceptionModule(832, 384, 192, 384, 48, 128, 128)
+
+#         self.avgpool = nn.AdaptiveAvgPool2d((1, 1))
+#         self.dropout = nn.Dropout(0.2)
+#         self.fc = nn.Linear(1024, num_classes)
+
+#     def forward(self, x):
+#         x = self.conv1(x)
+#         x = self.maxpool1(x)
+#         x = self.conv2(x)
+#         x = self.conv3(x)
+#         x = self.maxpool2(x)
+#         x = self.inception3a(x)
+#         x = self.inception3b(x)
+#         x = self.maxpool3(x)
+#         x = self.inception4a(x)
+#         x = self.inception4b(x)
+#         x = self.inception4c(x)
+#         x = self.inception4d(x)
+#         x = self.inception4e(x)
+#         x = self.maxpool4(x)
+#         x = self.inception5a(x)
+#         x = self.inception5b(x)
+#         x = self.avgpool(x)
+#         x = x.view(x.size(0), -1)
+#         x = self.dropout(x)
+#         x = self.fc(x)
+#         return x
 
 import torch
 import torch.nn as nn
@@ -129,54 +228,60 @@ class InceptionModule(nn.Module):
 class GoogleNet(nn.Module):
     def __init__(self, num_classes=1000):
         super(GoogleNet, self).__init__()
-        self.conv1 = nn.Conv2d(3, 64, kernel_size=7, stride=2, padding=3)
+        self.conv1 = nn.Conv2d(3, 32, kernel_size=3, stride=2, padding=1)
         self.maxpool1 = nn.MaxPool2d(kernel_size=3, stride=2, padding=1)
-        self.conv2 = nn.Conv2d(64, 64, kernel_size=1)
-        self.conv3 = nn.Conv2d(64, 192, kernel_size=3, padding=1)
+        self.conv2 = nn.Conv2d(32, 64, kernel_size=3, padding=1)
         self.maxpool2 = nn.MaxPool2d(kernel_size=3, stride=2, padding=1)
 
-        self.inception3a = InceptionModule(192, 64, 96, 128, 16, 32, 32)
-        self.inception3b = InceptionModule(256, 128, 128, 192, 32, 96, 64)
+        self.inception3a = InceptionModule(64, 32, 32, 64, 8, 16, 16)
+        self.inception3b = InceptionModule(128, 64, 64, 128, 16, 32, 32)
 
         self.maxpool3 = nn.MaxPool2d(kernel_size=3, stride=2, padding=1)
 
-        self.inception4a = InceptionModule(480, 192, 96, 208, 16, 48, 64)
-        self.inception4b = InceptionModule(512, 160, 112, 224, 24, 64, 64)
-        self.inception4c = InceptionModule(512, 128, 128, 256, 24, 64, 64)
-        self.inception4d = InceptionModule(512, 112, 144, 288, 32, 64, 64)
-        self.inception4e = InceptionModule(528, 256, 160, 320, 32, 128, 128)
-
-        self.maxpool4 = nn.MaxPool2d(kernel_size=3, stride=2, padding=1)
-
-        self.inception5a = InceptionModule(832, 256, 160, 320, 32, 128, 128)
-        self.inception5b = InceptionModule(832, 384, 192, 384, 48, 128, 128)
+        self.inception4a = InceptionModule(256, 128, 128, 256, 32, 64, 64)
+        self.inception4b = InceptionModule(512, 192, 96, 384, 48, 128, 128)
 
         self.avgpool = nn.AdaptiveAvgPool2d((1, 1))
-        self.dropout = nn.Dropout(0.2)
-        self.fc = nn.Linear(1024, num_classes)
+        self.dropout = nn.Dropout(0.4)
+        
+        # Calculate the input size for the FC layer dynamically
+        self.fc_input_size = self._calculate_fc_input_size()
+
+        self.fc = nn.Linear(self.fc_input_size, num_classes)
 
     def forward(self, x):
         x = self.conv1(x)
         x = self.maxpool1(x)
         x = self.conv2(x)
-        x = self.conv3(x)
         x = self.maxpool2(x)
         x = self.inception3a(x)
         x = self.inception3b(x)
         x = self.maxpool3(x)
         x = self.inception4a(x)
         x = self.inception4b(x)
-        x = self.inception4c(x)
-        x = self.inception4d(x)
-        x = self.inception4e(x)
-        x = self.maxpool4(x)
-        x = self.inception5a(x)
-        x = self.inception5b(x)
+        
         x = self.avgpool(x)
         x = x.view(x.size(0), -1)
         x = self.dropout(x)
         x = self.fc(x)
         return x
+
+    def _calculate_fc_input_size(self):
+        # This method calculates the input size for the FC layer dynamically
+        x = torch.randn(1, 3, 224, 224)  # Input tensor with the same size as ImageNet images
+        x = self.conv1(x)
+        x = self.maxpool1(x)
+        x = self.conv2(x)
+        x = self.maxpool2(x)
+        x = self.inception3a(x)
+        x = self.inception3b(x)
+        x = self.maxpool3(x)
+        x = self.inception4a(x)
+        x = self.inception4b(x)
+        x = self.avgpool(x)
+        x = x.view(x.size(0), -1)
+        return x.size(1)  # Return the
+
 
 
 class BasicBlock(nn.Module):

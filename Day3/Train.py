@@ -25,7 +25,7 @@ loss_test = []
 f1_train = []
 f1_test = []
 worse=0
-stop = 5
+stop = 15
 min_loss = 10
 for epoch in range(EPOCHS):
     model.train()  # Set the model to training mode
@@ -83,7 +83,7 @@ for epoch in range(EPOCHS):
                                     loss_test[:best_loss_epoch],
                                     f1_train[:best_loss_epoch],
                                     f1_test [:best_loss_epoch],])
-            loss_test.append(test_loss_val)
+            loss_test.append(test_loss_val) # using stop
             f1_test.append(test_f1_val)
             print(f'Epoch [{epoch + 1}/{EPOCHS}]  - Train Loss: {train_loss:.4f} - Train F1: {train_f1:.4f} - Test Loss: {test_loss_val:.4f} - Test F1: {test_f1_val:.4f}')
             break
