@@ -8,7 +8,8 @@
 
 FPT_AIO is a computer vision course under the guidance of two experienced mentors in the field of AI, [Mr. Tan]() and [Mr. Dong](). The course will cover fundamental knowledge about ML & DL, followed by the latest technologies and processing methods in Computer Vision.
 
-The knowledge from the course can address most of the current computer vision problems such as: classification, detection,... In addition, you will also learn about methods to improve model accuracy, such as tuning, and gain a deeper understanding of optimization algorithms.
+The knowledge from the course can address most of the current computer vision problems such as: classification, detection,...
+In addition, you will also learn about methods to improve model accuracy, such as tuning, and gain a deeper understanding of optimization algorithms.
 
 </div>
 <img width="1024" src="https://raw.githubusercontent.com/ultralytics/assets/main/im/banner-tasks.png" alt="Ultralytics YOLO supported tasks">
