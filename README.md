@@ -1,7 +1,7 @@
 <div align="center">
   <p>
     <a href="https://yolovision.ultralytics.com/" target="_blank">
-      <img width="50%" src="logo.png"></a>
+      <img width="100%" src="logo.png"></a>
   </p>
 
 <br>
