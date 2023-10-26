@@ -72,9 +72,7 @@ cd Document
 
 
 ## <div align="center">Contact</div>
-
-For Ultralytics bug reports and feature requests please visit [GitHub Issues](https://github.com/ultralytics/ultralytics/issues), and join our [Discord](https://ultralytics.com/discord) community for questions and discussions!
-
+mọi vấn đề liên hệ đình ẩn it nha :))))
 <br>
 <div align="center">
   <a href="https://github.com/dinhanit" style="text-decoration:none;">
