@@ -69,10 +69,12 @@ Silde and code demo
 git clone https://github.com/dinhanit/AIO_CPV.git
 cd Document
 ```
+## <div align="center">Middle Project</div>
 
+Click >>
+[OBJECT DETECTION WITH YOLO](https://github.com/dinhanit/YoloOnnx)
 
 ## <div align="center">Contact</div>
-mọi vấn đề liên hệ đình ẩn it nha :))))
 <br>
 <div align="center">
   <a href="https://github.com/dinhanit" style="text-decoration:none;">
