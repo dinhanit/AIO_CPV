@@ -1,5 +1,0 @@
-torchvision
-matplotlib
-seaborn
-scikit-learn
-torch
