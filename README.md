@@ -67,9 +67,9 @@ Silde and code demo
 
 ```bash
 git clone https://github.com/dinhanit/AIO_CPV.git
-cd Document
+cd Documents
 ```
-## <div align="center">Middle Project</div>
+## <div align="center">Mid-Term Project</div>
 
 Click >>
 [OBJECT DETECTION WITH YOLO](https://github.com/dinhanit/YoloOnnx)
